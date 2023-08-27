@@ -50,4 +50,11 @@ public class MedicoController {
             return ResponseEntity.notFound().build();
         }
     }
+
+    @DeleteMapping("/{id}")
+    @Transactional
+    public void excluir(@PathVariable("id") Long id) {
+        var medico = repository.getReferenceById(id);
+        medico.excluir();
+    }
 }
