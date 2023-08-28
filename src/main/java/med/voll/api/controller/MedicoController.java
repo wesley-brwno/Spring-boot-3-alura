@@ -32,7 +32,7 @@ public class MedicoController {
 
     @GetMapping
     public Page<DadosListagemMedicos> listar(@PageableDefault(size = 10, sort = {"nome"}) Pageable pageable) {
-        return repository.findAll(pageable).map(DadosListagemMedicos::new);
+        return repository.findAllByAtivoTrue(pageable).map(DadosListagemMedicos::new);
     }
 
 
@@ -53,8 +53,11 @@ public class MedicoController {
 
     @DeleteMapping("/{id}")
     @Transactional
-    public void excluir(@PathVariable("id") Long id) {
+    public ResponseEntity<Void> excluir(@PathVariable("id") Long id) {
         var medico = repository.getReferenceById(id);
         medico.excluir();
+
+        return ResponseEntity.noContent().build();
     }
+    // 204 No Content | The request was successful but the server is not returning any content.
 }
