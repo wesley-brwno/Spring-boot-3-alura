@@ -31,9 +31,12 @@ public class MedicoController {
     }
 
     @GetMapping
-    public Page<DadosListagemMedicos> listar(@PageableDefault(size = 10, sort = {"nome"}) Pageable pageable) {
-        return repository.findAllByAtivoTrue(pageable).map(DadosListagemMedicos::new);
+    public ResponseEntity<Page<DadosListagemMedicos>> listar(@PageableDefault(size = 10, sort = {"nome"}) Pageable pageable) {
+        Page<DadosListagemMedicos> page = repository.findAllByAtivoTrue(pageable).map(DadosListagemMedicos::new);
+        return ResponseEntity.ok(page);
     }
+
+    //200 OK	The request was successful and the server is returning content.
 
 
     @PutMapping
