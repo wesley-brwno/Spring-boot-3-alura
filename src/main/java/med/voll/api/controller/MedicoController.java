@@ -26,8 +26,8 @@ public class MedicoController {
 
     @PostMapping
     @Transactional
-    public void cadastrar(@RequestBody @Valid DadosCadasrtoMedico dados) {
-        repository.save(new Medico(dados));
+    public ResponseEntity<Medico> cadastrar(@RequestBody @Valid DadosCadasrtoMedico dados) {
+        return ResponseEntity.ok(repository.save(new Medico(dados)));
     }
 
     @GetMapping
