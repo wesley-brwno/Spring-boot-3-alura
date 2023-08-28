@@ -41,18 +41,20 @@ public class MedicoController {
 
     @PutMapping
     @Transactional
-    public ResponseEntity<String> atualizar(@RequestBody @Valid DadosAtualizacaoMedico dados) {
+    public ResponseEntity<DadosDetalhamentoMedico> atualizar(@RequestBody @Valid DadosAtualizacaoMedico dados) {
         Optional<Medico> optionalMedico = repository.findById(dados.id());
 
         if (optionalMedico.isPresent()) {
             Medico medico = optionalMedico.get();
             medico.atualizarInformacaos(dados);
             repository.save(medico);
-            return ResponseEntity.ok("Médico atualizado com sucesso.");
+            return ResponseEntity.ok(new DadosDetalhamentoMedico(medico));
         } else {
             return ResponseEntity.notFound().build();
         }
     }
+
+    // 404 Not Found | The requested resource could not be found.
 
     @DeleteMapping("/{id}")
     @Transactional
