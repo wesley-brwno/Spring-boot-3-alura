@@ -2,16 +2,15 @@ package med.voll.api.controller;
 
 import jakarta.validation.Valid;
 import med.voll.api.medico.*;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.repository.query.Param;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.util.UriComponentsBuilder;
 
-import java.util.List;
+import java.net.URI;
 import java.util.Optional;
 
 @RestController
@@ -26,16 +25,20 @@ public class MedicoController {
 
     @PostMapping
     @Transactional
-    public ResponseEntity<Medico> cadastrar(@RequestBody @Valid DadosCadasrtoMedico dados) {
-        return ResponseEntity.ok(repository.save(new Medico(dados)));
+    public ResponseEntity<DadosDetalhamentoMedico> cadastrar(@RequestBody @Valid DadosCadasrtoMedico dados, UriComponentsBuilder uriComponentsBuilder) {
+        Medico medico = new Medico(dados);
+        repository.save(medico);
+
+        URI uri = uriComponentsBuilder.path("/medicos/{id}").buildAndExpand(medico.getId()).toUri();
+        return ResponseEntity.created(uri).body(new DadosDetalhamentoMedico(medico));
     }
+    // 201 Created	The request was successful and the server created a new resource.
 
     @GetMapping
     public ResponseEntity<Page<DadosListagemMedicos>> listar(@PageableDefault(size = 10, sort = {"nome"}) Pageable pageable) {
         Page<DadosListagemMedicos> page = repository.findAllByAtivoTrue(pageable).map(DadosListagemMedicos::new);
         return ResponseEntity.ok(page);
     }
-
     //200 OK	The request was successful and the server is returning content.
 
 
@@ -53,7 +56,6 @@ public class MedicoController {
             return ResponseEntity.notFound().build();
         }
     }
-
     // 404 Not Found | The requested resource could not be found.
 
     @DeleteMapping("/{id}")
