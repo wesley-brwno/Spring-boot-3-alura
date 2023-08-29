@@ -3,6 +3,7 @@ package med.voll.api.paciente;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 import med.voll.api.endereco.Endereco;
 
@@ -10,6 +11,7 @@ import med.voll.api.endereco.Endereco;
 @AllArgsConstructor
 @NoArgsConstructor
 @EqualsAndHashCode(of = "id")
+@Getter
 public class Paciente {
 
     @Id
