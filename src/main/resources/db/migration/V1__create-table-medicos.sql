@@ -1,4 +1,4 @@
-create table medicos (
+create table if not exists medicos (
     id bigint not null auto_increment,
     nome varchar(100) not null,
     email varchar(100) not null unique,
@@ -13,5 +13,4 @@ create table medicos (
     cidade varchar(100) not null,
 
     primary key(id)
-
 );
