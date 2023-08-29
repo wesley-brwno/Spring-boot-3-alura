@@ -1,15 +1,12 @@
 package med.voll.api.controller;
 
 import jakarta.validation.Valid;
-import med.voll.api.paciente.Paciente;
-import med.voll.api.paciente.PacienteCadastroDTO;
-import med.voll.api.paciente.PatientDataDetails;
-import med.voll.api.paciente.PatientRepository;
+import med.voll.api.paciente.*;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.net.URI;
@@ -30,5 +27,11 @@ public class PacienteController {
 
         URI uri = uriComponentsBuilder.path("/pacientes/{id}").buildAndExpand(paciente.getId()).toUri();
         return ResponseEntity.created(uri).body(new PatientDataDetails(paciente));
+    }
+
+    @GetMapping
+    public ResponseEntity<Page<PatientDataListing>> listPatients(@PageableDefault(size = 10, sort = {"nome"}) Pageable pageable) {
+        Page<PatientDataListing> page = patientRepository.findAll(pageable).map(PatientDataListing::new);
+        return ResponseEntity.ok(page);
     }
 }
