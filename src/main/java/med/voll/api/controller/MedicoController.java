@@ -67,4 +67,10 @@ public class MedicoController {
         return ResponseEntity.noContent().build();
     }
     // 204 No Content | The request was successful but the server is not returning any content.
+
+    @GetMapping("/{id}")
+    public ResponseEntity<DadosDetalhamentoMedico> detalhar(@PathVariable Long id) {
+        Medico medico = repository.getReferenceById(id);
+        return ResponseEntity.ok(new DadosDetalhamentoMedico(medico));
+    }
 }
