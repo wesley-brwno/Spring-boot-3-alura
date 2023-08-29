@@ -20,6 +20,13 @@ public class Paciente {
     private String CPF;
     @Embedded
     private Endereco endereco;
+
+    public Paciente(PacienteCadastroDTO patientData) {
+        this.nome = patientData.nome();
+        this.telefone = patientData.telefone();
+        this.CPF = patientData.cpf();
+        this.endereco = new Endereco(patientData.dadosEndereco());
+    }
 }
 
 
