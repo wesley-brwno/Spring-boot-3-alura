@@ -7,7 +7,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import med.voll.api.endereco.Endereco;
 
-@Entity(name = "paciente")
+@Entity(name = "pacientes")
 @AllArgsConstructor
 @NoArgsConstructor
 @EqualsAndHashCode(of = "id")
@@ -28,7 +28,8 @@ public class Paciente {
         this.nome = patientData.nome();
         this.telefone = patientData.telefone();
         this.CPF = patientData.cpf();
-        this.endereco = new Endereco(patientData.dadosEndereco());
+        this.email = patientData.email();
+        this.endereco = new Endereco(patientData.endereco());
     }
 }
 
