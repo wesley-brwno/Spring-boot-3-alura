@@ -18,6 +18,7 @@ public class Paciente {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String nome;
+    private String email;
     private String telefone;
     private String CPF;
     @Embedded
