@@ -31,6 +31,15 @@ public class Paciente {
         this.email = patientData.email();
         this.endereco = new Endereco(patientData.endereco());
     }
+
+    public void updateData(PatientDataUpdate updateData) {
+        if (updateData.nome() != null)
+            this.nome = updateData.nome();
+        if (updateData.telefone() != null)
+            this.telefone = updateData.telefone();
+        if (updateData.endereco() != null)
+            this.endereco.atualizarEndereco(updateData.endereco());
+    }
 }
 
 
