@@ -21,6 +21,7 @@ public class Paciente {
     private String email;
     private String telefone;
     private String CPF;
+    private Boolean ativo;
     @Embedded
     private Endereco endereco;
 
@@ -30,6 +31,7 @@ public class Paciente {
         this.CPF = patientData.cpf();
         this.email = patientData.email();
         this.endereco = new Endereco(patientData.endereco());
+        this.ativo = true;
     }
 
     public void updateData(PatientDataUpdate updateData) {
@@ -39,6 +41,10 @@ public class Paciente {
             this.telefone = updateData.telefone();
         if (updateData.endereco() != null)
             this.endereco.atualizarEndereco(updateData.endereco());
+    }
+
+    public void inativatePatient() {
+        this.ativo = false;
     }
 }
 
