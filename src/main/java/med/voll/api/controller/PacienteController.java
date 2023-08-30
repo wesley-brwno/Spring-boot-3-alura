@@ -6,6 +6,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
@@ -45,6 +46,18 @@ public class PacienteController {
             paciente.updateData(patientUpdate);
             patientRepository.save(paciente);
             return ResponseEntity.ok(new PatientDataDetails(paciente));
+        }
+        return ResponseEntity.notFound().build();
+    }
+
+    @DeleteMapping("/{id}")
+    @Transactional
+    public ResponseEntity<Void> deletePatient(@PathVariable Long id) {
+        Optional<Paciente> patientById = patientRepository.findById(id);
+        if (patientById.isPresent()) {
+            Paciente paciente = patientById.get();
+            paciente.inativatePatient();
+            return ResponseEntity.noContent().build();
         }
         return ResponseEntity.notFound().build();
     }
