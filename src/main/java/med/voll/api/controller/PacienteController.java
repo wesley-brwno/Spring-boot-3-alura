@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.net.URI;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/pacientes")
@@ -33,5 +34,18 @@ public class PacienteController {
     public ResponseEntity<Page<PatientDataListing>> listPatients(@PageableDefault(size = 10, sort = {"nome"}) Pageable pageable) {
         Page<PatientDataListing> page = patientRepository.findAll(pageable).map(PatientDataListing::new);
         return ResponseEntity.ok(page);
+    }
+
+    @PutMapping
+    public ResponseEntity<PatientDataDetails> updatePatient(@RequestBody @Valid PatientDataUpdate patientUpdate) {
+        Optional<Paciente> patientById = patientRepository.findById(patientUpdate.id());
+
+        if (patientById.isPresent()) {
+            Paciente paciente = patientById.get();
+            paciente.updateData(patientUpdate);
+            patientRepository.save(paciente);
+            return ResponseEntity.ok(new PatientDataDetails(paciente));
+        }
+        return ResponseEntity.notFound().build();
     }
 }
