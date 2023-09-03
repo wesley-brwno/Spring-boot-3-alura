@@ -57,7 +57,7 @@ public class AgendaDeConsultas {
         consultaRepository.deleteAppointmentIfBefore24Hours(dados.id());
 
         if (consultaRepository.existsById(dados.id())) {
-            throw new ValidacaoException("A consulta com o ID "+dados.id()+" não foi cancelada porque a data da consulta é dentro de 24 horas da data atual. ");
+            throw new ValidacaoException("A consulta com o ID "+dados.id()+" não foi cancelada pois não há atencedência de 24 horas.");
         }
     }
 }
