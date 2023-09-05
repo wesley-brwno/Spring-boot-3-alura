@@ -2,11 +2,14 @@ package med.voll.api.domain.consulta;
 
 import jakarta.validation.ValidationException;
 import med.voll.api.domain.ValidacaoException;
+import med.voll.api.domain.consulta.validacoes.ValidadorAgendamentoDeConsultas;
 import med.voll.api.domain.medico.Medico;
 import med.voll.api.domain.medico.MedicoRepository;
 import med.voll.api.domain.paciente.Paciente;
 import med.voll.api.domain.paciente.PatientRepository;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 public class AgendaDeConsultas {
@@ -14,27 +17,35 @@ public class AgendaDeConsultas {
     private final ConsultaRepository consultaRepository;
     private final MedicoRepository medicoRepository;
     private final PatientRepository patientRepository;
+    private List<ValidadorAgendamentoDeConsultas> validadores;
 
-    public AgendaDeConsultas(ConsultaRepository consultaRepository, MedicoRepository medicoRepository, PatientRepository patientRepository) {
+    public AgendaDeConsultas(ConsultaRepository consultaRepository, MedicoRepository medicoRepository, PatientRepository patientRepository, List<ValidadorAgendamentoDeConsultas> validadores) {
         this.consultaRepository = consultaRepository;
         this.medicoRepository = medicoRepository;
         this.patientRepository = patientRepository;
+        this.validadores = validadores;
     }
 
-    public void agendar(DadosAgendamentoConsulta dados) {
+    public DadosDetalhamentoConsulta agendar(DadosAgendamentoConsulta dados) {
         if (!patientRepository.existsById(dados.idPaciente())) {
-            throw new ValidationException("Id do paciente informado não existe");
+            throw new ValidacaoException("Id do paciente informado não existe");
         }
         if (dados.idMedico() != null && !medicoRepository.existsById(dados.idMedico())) {
-            throw new ValidationException("Id do medico informado não existe");
+            throw new ValidacaoException("Id do medico informado não existe");
         }
+
+        validadores.forEach(v -> v.validar(dados));
 
         Paciente paciente = patientRepository.getReferenceById(dados.idPaciente());
         Medico medico = escolherMedico(dados);
 
+        if (medico == null) {
+            throw new ValidacaoException("Não existe medico disponível nesta data");
+        }
 
         Consulta consulta = new Consulta(null, medico, paciente, dados.data());
         consultaRepository.save(consulta);
+        return new DadosDetalhamentoConsulta(consulta);
     }
 
     private Medico escolherMedico(DadosAgendamentoConsulta dados) {
