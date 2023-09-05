@@ -1,6 +1,8 @@
 package med.voll.api.infra.exception;
 
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.validation.ValidationException;
+import med.voll.api.domain.ValidacaoException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
@@ -47,6 +49,10 @@ public class TradadorDeErrors {
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Erro: " +ex.getLocalizedMessage());
     }
 
+    @ExceptionHandler(ValidacaoException.class)
+    public ResponseEntity<String> tratarErroRegraDeNegocio(ValidacaoException ex) {
+        return ResponseEntity.badRequest().body(ex.getMessage());
+    }
 
     private record DadosErrorValidation(String campo, String messagem) {
         public DadosErrorValidation(FieldError error) {
